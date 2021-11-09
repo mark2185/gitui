@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - honor options (for untracked files) in `stage_all` command ([#933](https://github.com/extrawurst/gitui/issues/933))
 
+### Internal
+- switch from using `chrono` to `time` fixing some unsoundness ([#950](https://github.com/extrawurst/gitui/issues/950),[#951](https://github.com/extrawurst/gitui/issues/951)) 
+
 ## [0.18] - 2021-10-11
 
 **rebase merge with conflicts**

@@ -1,6 +1,6 @@
 use asyncgit::sync::{CommitId, CommitInfo};
-use chrono::prelude::*;
 use std::slice::Iter;
+use time::{Duration, OffsetDateTime};
 
 use crate::components::utils::emojifi_string;
 
@@ -10,7 +10,7 @@ type BoxStr = Box<str>;
 
 pub struct LogEntry {
 	//TODO: cache string representation
-	pub time: DateTime<Local>,
+	pub time: OffsetDateTime,
 	//TODO: use tinyvec here
 	pub author: BoxStr,
 	pub msg: BoxStr,
@@ -21,11 +21,8 @@ pub struct LogEntry {
 
 impl From<CommitInfo> for LogEntry {
 	fn from(c: CommitInfo) -> Self {
-		let time =
-			DateTime::<Local>::from(DateTime::<Utc>::from_utc(
-				NaiveDateTime::from_timestamp(c.time, 0),
-				Utc,
-			));
+		let time = OffsetDateTime::from_unix_timestamp(c.time)
+			.expect("TODO");
 
 		// Replace markdown emojis with Unicode equivalent
 		let author = c.author;
@@ -42,20 +39,29 @@ impl From<CommitInfo> for LogEntry {
 	}
 }
 
+static FORMAT_DATE: &[::time::format_description::FormatItem<'_>] =
+	time::macros::format_description!("[year]-[month]-[day]");
+
+static FORMAT_TIME: &[::time::format_description::FormatItem<'_>] =
+	time::macros::format_description!("[hour]:[minute]:[second]  ");
+
 impl LogEntry {
-	pub fn time_to_string(&self, now: DateTime<Local>) -> String {
+	pub fn time_to_string(
+		&self,
+		now: time::OffsetDateTime,
+	) -> String {
 		let delta = now - self.time;
-		if delta < chrono::Duration::minutes(30) {
-			let delta_str = if delta < chrono::Duration::minutes(1) {
+		if delta < Duration::minutes(30) {
+			let delta_str = if delta < Duration::minutes(1) {
 				"<1m ago".to_string()
 			} else {
-				format!("{:0>2}m ago", delta.num_minutes())
+				format!("{:0>2}m ago", delta.whole_minutes())
 			};
 			format!("{: <10}", delta_str)
 		} else if self.time.date() == now.date() {
-			self.time.format("%T  ").to_string()
+			self.time.format(&FORMAT_TIME).expect("TODO")
 		} else {
-			self.time.format("%Y-%m-%d").to_string()
+			self.time.format(&FORMAT_DATE).expect("TODO")
 		}
 	}
 }
@@ -114,7 +120,7 @@ impl ItemBatch {
 
 #[cfg(test)]
 mod tests {
-	use chrono::Utc;
+	use time::macros::datetime;
 
 	use super::*;
 
@@ -161,21 +167,19 @@ mod tests {
 		});
 
 		assert_eq!(
-			&entry.time_to_string(DateTime::from(
-				Utc.ymd(2014, 7, 8).and_hms(9, 10, 11)
-			)),
+			&entry.time_to_string(datetime!(2000-01-01 0:00 UTC)),
 			"1970-01-01"
 		);
 		assert_eq!(
-			&entry.time_to_string(DateTime::from(
-				Utc.ymd(1970, 1, 1).and_hms(0, 2, 0)
-			)),
+			&entry.time_to_string(datetime!(1970-01-01 1:00 UTC)),
+			"00:00:00  "
+		);
+		assert_eq!(
+			&entry.time_to_string(datetime!(1970-01-01 0:02 UTC)),
 			"02m ago   "
 		);
 		assert_eq!(
-			&entry.time_to_string(DateTime::from(
-				Utc.ymd(1970, 1, 1).and_hms(0, 0, 1)
-			)),
+			&entry.time_to_string(datetime!(1970-01-01 0:00:01 UTC)),
 			"<1m ago   "
 		);
 	}

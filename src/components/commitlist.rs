@@ -11,7 +11,6 @@ use crate::{
 };
 use anyhow::Result;
 use asyncgit::sync::{CommitId, Tags};
-use chrono::{DateTime, Local};
 use crossterm::event::Event;
 use std::{
 	borrow::Cow, cell::Cell, cmp, convert::TryFrom, time::Instant,
@@ -232,7 +231,7 @@ impl CommitList {
 		tags: Option<String>,
 		theme: &Theme,
 		width: usize,
-		now: DateTime<Local>,
+		now: time::OffsetDateTime,
 		marked: Option<bool>,
 	) -> Spans<'a> {
 		let mut txt: Vec<Span> = Vec::with_capacity(
@@ -309,7 +308,7 @@ impl CommitList {
 
 		let mut txt: Vec<Spans> = Vec::with_capacity(height);
 
-		let now = Local::now();
+		let now = time::OffsetDateTime::now_utc();
 
 		let any_marked = !self.marked.is_empty();
 

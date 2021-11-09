@@ -1,4 +1,3 @@
-use chrono::{DateTime, Local, NaiveDateTime, Utc};
 use lazy_static::lazy_static;
 use std::borrow::Cow;
 use unicode_width::UnicodeWidthStr;
@@ -23,18 +22,20 @@ macro_rules! try_or_popup {
 	};
 }
 
+//TODO: implement
 /// helper func to convert unix time since epoch to formated time string in local timezone
-pub fn time_to_string(secs: i64, short: bool) -> String {
-	let time = DateTime::<Local>::from(DateTime::<Utc>::from_utc(
-		NaiveDateTime::from_timestamp(secs, 0),
-		Utc,
-	));
-	time.format(if short {
-		"%Y-%m-%d"
-	} else {
-		"%Y-%m-%d %H:%M:%S"
-	})
-	.to_string()
+pub fn time_to_string(_secs: i64, _short: bool) -> String {
+	// let time = DateTime::<Local>::from(DateTime::<Utc>::from_utc(
+	// 	NaiveDateTime::from_timestamp(secs, 0),
+	// 	Utc,
+	// ));
+	// time.format(if short {
+	// 	"%Y-%m-%d"
+	// } else {
+	// 	"%Y-%m-%d %H:%M:%S"
+	// })
+	// .to_string()
+	String::from("00:00")
 }
 
 #[inline]
