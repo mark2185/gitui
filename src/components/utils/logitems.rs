@@ -1,5 +1,5 @@
 use asyncgit::sync::{CommitId, CommitInfo};
-use chrono::{DateTime, Duration, Local, NaiveDateTime, Utc};
+use chrono::prelude::*;
 use std::slice::Iter;
 
 use crate::components::utils::emojifi_string;
@@ -45,8 +45,8 @@ impl From<CommitInfo> for LogEntry {
 impl LogEntry {
 	pub fn time_to_string(&self, now: DateTime<Local>) -> String {
 		let delta = now - self.time;
-		if delta < Duration::minutes(30) {
-			let delta_str = if delta < Duration::minutes(1) {
+		if delta < chrono::Duration::minutes(30) {
+			let delta_str = if delta < chrono::Duration::minutes(1) {
 				"<1m ago".to_string()
 			} else {
 				format!("{:0>2}m ago", delta.num_minutes())
@@ -114,7 +114,7 @@ impl ItemBatch {
 
 #[cfg(test)]
 mod tests {
-	use time::macros::datetime;
+	use chrono::Utc;
 
 	use super::*;
 
@@ -161,10 +161,22 @@ mod tests {
 		});
 
 		assert_eq!(
-			&entry.time_to_string(
-				datetime!(2020-01-02 03:04:05 +06:07:08)
-			),
-			""
+			&entry.time_to_string(DateTime::from(
+				Utc.ymd(2014, 7, 8).and_hms(9, 10, 11)
+			)),
+			"1970-01-01"
+		);
+		assert_eq!(
+			&entry.time_to_string(DateTime::from(
+				Utc.ymd(1970, 1, 1).and_hms(0, 2, 0)
+			)),
+			"02m ago   "
+		);
+		assert_eq!(
+			&entry.time_to_string(DateTime::from(
+				Utc.ymd(1970, 1, 1).and_hms(0, 0, 1)
+			)),
+			"<1m ago   "
 		);
 	}
 }
