@@ -114,6 +114,8 @@ impl ItemBatch {
 
 #[cfg(test)]
 mod tests {
+	use time::macros::datetime;
+
 	use super::*;
 
 	fn test_conversion(s: &str) -> String {
@@ -147,5 +149,22 @@ mod tests {
 			"This :should_not_convert:"
 		);
 		assert_eq!(&test_conversion(":gopher:"), ":gopher:");
+	}
+
+	#[test]
+	fn test_time() {
+		let entry = LogEntry::from(CommitInfo {
+			author: String::new(),
+			message: String::new(),
+			id: CommitId::default(),
+			time: 0,
+		});
+
+		assert_eq!(
+			&entry.time_to_string(
+				datetime!(2020-01-02 03:04:05 +06:07:08)
+			),
+			""
+		);
 	}
 }

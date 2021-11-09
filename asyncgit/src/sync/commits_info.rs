@@ -27,6 +27,12 @@ impl CommitId {
 	}
 }
 
+impl Default for CommitId {
+	fn default() -> Self {
+		Self(Oid::zero())
+	}
+}
+
 //TODO: remove once clippy fixed: https://github.com/rust-lang/rust-clippy/issues/6983
 #[allow(clippy::wrong_self_convention)]
 impl ToString for CommitId {
