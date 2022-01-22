@@ -27,6 +27,7 @@ mod staging;
 mod stash;
 mod state;
 pub mod status;
+mod submodules;
 mod tags;
 mod tree;
 pub mod utils;
@@ -79,6 +80,7 @@ pub use stash::{
 	get_stashes, stash_apply, stash_drop, stash_pop, stash_save,
 };
 pub use state::{repo_state, RepoState};
+pub use submodules::get_submodules;
 pub use tags::{
 	delete_tag, get_tags, get_tags_with_metadata, CommitTags, Tag,
 	TagWithMetadata, Tags,

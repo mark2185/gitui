@@ -75,6 +75,7 @@ pub struct KeysList {
 	pub undo_commit: KeyEvent,
 	pub stage_unstage_item: KeyEvent,
 	pub tag_annotate: KeyEvent,
+	pub view_submodules: KeyEvent,
 }
 
 #[rustfmt::skip]
@@ -152,6 +153,7 @@ impl Default for KeysList {
 			file_find: KeyEvent { code: KeyCode::Char('f'), modifiers: KeyModifiers::empty()},
 			stage_unstage_item: KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::empty()},
 			tag_annotate: KeyEvent { code: KeyCode::Char('a'), modifiers: KeyModifiers::CONTROL},
+			view_submodules: KeyEvent { code: KeyCode::Char('S'), modifiers: KeyModifiers::SHIFT},
 		}
 	}
 }
