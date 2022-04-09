@@ -80,6 +80,8 @@ impl StashList {
 			self.queue.push(InternalEvent::ConfirmAction(
 				Action::StashDrop(self.list.marked().to_vec()),
 			));
+
+			self.list.unmark_all();
 		} else if let Some(e) = self.list.selected_entry() {
 			self.queue.push(InternalEvent::ConfirmAction(
 				Action::StashDrop(vec![e.id]),
