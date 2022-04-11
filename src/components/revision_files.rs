@@ -389,6 +389,7 @@ impl Component for RevisionFilesComponent {
 				{
 					//Note: switch to status tab so its clear we are
 					// not altering a file inside a revision here
+                    // TODO: maybe not necessary when opening from files tab
 					self.queue.push(InternalEvent::TabSwitchStatus);
 					self.queue.push(
 						InternalEvent::OpenExternalEditor(Some(file)),

@@ -388,6 +388,7 @@ impl App {
 
 			self.process_queue(flags)?;
 		} else if let InputEvent::State(polling_state) = ev {
+            let current_tab = self.tab;
 			self.external_editor_popup.hide();
 			if let InputState::Paused = polling_state {
 				let result = match self.file_to_open.take() {
@@ -399,6 +400,7 @@ impl App {
 					}
 					None => self.commit.show_editor(),
 				};
+                self.set_tab(current_tab)?;
 
 				if let Err(e) = result {
 					let msg =
