@@ -138,6 +138,10 @@ impl CommitList {
 		&self.marked
 	}
 
+	pub fn unmark_all(&mut self) {
+		self.marked = Vec::with_capacity(2);
+	}
+
 	pub fn copy_entry_hash(&self) -> Result<()> {
 		if let Some(e) = self.items.iter().nth(
 			self.selection.saturating_sub(self.items.index_offset()),
