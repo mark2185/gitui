@@ -311,14 +311,14 @@ impl Component for Revlog {
 						self.queue.push(InternalEvent::OpenPopup(
 							StackablePopupOpen::CompareCommits(
 								InspectCommitOpen::new(
-									self.list.marked()[0],
+									self.list.marked().borrow()[0],
 								),
 							),
 						));
 						return Ok(EventState::Consumed);
 					} else if self.list.marked_count() == 2 {
 						//compare two marked commits
-						let marked = self.list.marked();
+						let marked = self.list.marked().borrow();
 						self.queue.push(InternalEvent::OpenPopup(
 							StackablePopupOpen::CompareCommits(
 								InspectCommitOpen {

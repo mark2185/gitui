@@ -14,6 +14,7 @@ use asyncgit::sync::{CommitId, Tags};
 use chrono::{DateTime, Local};
 use crossterm::event::Event;
 use itertools::Itertools;
+use std::cell::RefCell;
 use std::{
 	borrow::Cow, cell::Cell, cmp, convert::TryFrom, time::Instant,
 };
@@ -34,7 +35,7 @@ pub struct CommitList {
 	branch: Option<String>,
 	count_total: usize,
 	items: ItemBatch,
-	marked: Vec<CommitId>,
+	marked: RefCell<Vec<CommitId>>,
 	scroll_state: (Instant, f32),
 	tags: Option<Tags>,
 	current_size: Cell<(u16, u16)>,
@@ -52,7 +53,7 @@ impl CommitList {
 	) -> Self {
 		Self {
 			items: ItemBatch::default(),
-			marked: Vec::with_capacity(2),
+			marked: RefCell::new(Vec::with_capacity(2)),
 			selection: 0,
 			branch: None,
 			count_total: 0,
@@ -130,16 +131,12 @@ impl CommitList {
 
 	///
 	pub fn marked_count(&self) -> usize {
-		self.marked.len()
+		self.marked.borrow().len()
 	}
 
 	///
-	pub fn marked(&self) -> &[CommitId] {
+	pub fn marked(&self) -> &RefCell<Vec<CommitId>> {
 		&self.marked
-	}
-
-	pub fn unmark_all(&mut self) {
-		self.marked = Vec::with_capacity(2);
 	}
 
 	pub fn copy_entry_hash(&self) -> Result<()> {
@@ -191,9 +188,11 @@ impl CommitList {
 		if let Some(e) = self.selected_entry() {
 			let id = e.id;
 			if self.is_marked(&id).unwrap_or_default() {
-				self.marked.retain(|marked| marked != &id);
+				self.marked
+					.borrow_mut()
+					.retain(|marked| marked != &id);
 			} else {
-				self.marked.push(id);
+				self.marked.borrow_mut().push(id);
 			}
 		}
 	}
@@ -223,10 +222,11 @@ impl CommitList {
 	}
 
 	fn is_marked(&self, id: &CommitId) -> Option<bool> {
-		if self.marked.is_empty() {
+		if self.marked.borrow().is_empty() {
 			None
 		} else {
-			let found = self.marked.iter().any(|entry| entry == id);
+			let found =
+				self.marked.borrow().iter().any(|entry| entry == id);
 			Some(found)
 		}
 	}
@@ -316,7 +316,7 @@ impl CommitList {
 
 		let now = Local::now();
 
-		let any_marked = !self.marked.is_empty();
+		let any_marked = !self.marked.borrow().is_empty();
 
 		for (idx, e) in self
 			.items

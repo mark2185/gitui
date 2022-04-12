@@ -10,9 +10,8 @@ use asyncgit::{
 	PushType,
 };
 use bitflags::bitflags;
-use std::{
-	cell::RefCell, collections::VecDeque, path::PathBuf, rc::Rc,
-};
+use std::cell::RefCell;
+use std::{collections::VecDeque, path::PathBuf, rc::Rc};
 
 bitflags! {
 	/// flags defining what part of the app need to update
@@ -41,7 +40,7 @@ pub enum Action {
 	Reset(ResetItem),
 	ResetHunk(String, u64),
 	ResetLines(String, Vec<DiffLinePosition>),
-	StashDrop(Vec<CommitId>),
+	StashDrop(RefCell<Vec<CommitId>>),
 	StashPop(CommitId),
 	DeleteLocalBranch(String),
 	DeleteRemoteBranch(String),

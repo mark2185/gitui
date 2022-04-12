@@ -864,7 +864,20 @@ impl App {
 					flags.insert(NeedsUpdate::ALL);
 				}
 			}
-			Action::StashDrop(_) | Action::StashPop(_) => {
+			Action::StashDrop(ref ids) => {
+				if let Err(e) = StashList::action_confirmed(
+					&self.repo.borrow(),
+					&action,
+				) {
+					self.queue.push(InternalEvent::ShowErrorMsg(
+						e.to_string(),
+					));
+				}
+
+				ids.replace(vec![]);
+				flags.insert(NeedsUpdate::ALL);
+			}
+			Action::StashPop(_) => {
 				if let Err(e) = StashList::action_confirmed(
 					&self.repo.borrow(),
 					&action,
