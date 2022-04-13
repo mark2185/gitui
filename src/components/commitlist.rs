@@ -15,6 +15,7 @@ use chrono::{DateTime, Local};
 use crossterm::event::Event;
 use itertools::Itertools;
 use std::cell::RefCell;
+use std::rc::Rc;
 use std::{
 	borrow::Cow, cell::Cell, cmp, convert::TryFrom, time::Instant,
 };
@@ -35,7 +36,7 @@ pub struct CommitList {
 	branch: Option<String>,
 	count_total: usize,
 	items: ItemBatch,
-	marked: RefCell<Vec<CommitId>>,
+	marked: Rc<RefCell<Vec<CommitId>>>,
 	scroll_state: (Instant, f32),
 	tags: Option<Tags>,
 	current_size: Cell<(u16, u16)>,
@@ -53,7 +54,7 @@ impl CommitList {
 	) -> Self {
 		Self {
 			items: ItemBatch::default(),
-			marked: RefCell::new(Vec::with_capacity(2)),
+			marked: Rc::new(RefCell::new(Vec::with_capacity(2))),
 			selection: 0,
 			branch: None,
 			count_total: 0,
