@@ -82,9 +82,9 @@ impl StashList {
 			));
 		} else if let Some(e) = self.list.selected_entry() {
 			self.queue.push(InternalEvent::ConfirmAction(
-				Action::StashDrop(std::cell::RefCell::new(vec![
+				Action::StashDrop(std::rc::Rc::new(std::cell::RefCell::new(vec![
 					e.id,
-				])),
+				]))),
 			));
 		}
 	}

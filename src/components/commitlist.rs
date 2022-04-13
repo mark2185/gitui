@@ -136,8 +136,8 @@ impl CommitList {
 	}
 
 	///
-	pub fn marked(&self) -> &RefCell<Vec<CommitId>> {
-		&self.marked
+	pub fn marked(&self) -> Rc<RefCell<Vec<CommitId>>> {
+	    self.marked.clone()
 	}
 
 	pub fn copy_entry_hash(&self) -> Result<()> {

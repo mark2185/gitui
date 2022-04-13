@@ -40,7 +40,7 @@ pub enum Action {
 	Reset(ResetItem),
 	ResetHunk(String, u64),
 	ResetLines(String, Vec<DiffLinePosition>),
-	StashDrop(RefCell<Vec<CommitId>>),
+	StashDrop(Rc<RefCell<Vec<CommitId>>>),
 	StashPop(CommitId),
 	DeleteLocalBranch(String),
 	DeleteRemoteBranch(String),

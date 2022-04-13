@@ -318,12 +318,13 @@ impl Component for Revlog {
 						return Ok(EventState::Consumed);
 					} else if self.list.marked_count() == 2 {
 						//compare two marked commits
-						let marked = self.list.marked().borrow();
+						let marked = self.list.marked();
+                        let ref_marked = marked.borrow();
 						self.queue.push(InternalEvent::OpenPopup(
 							StackablePopupOpen::CompareCommits(
 								InspectCommitOpen {
-									commit_id: marked[0],
-									compare_id: Some(marked[1]),
+									commit_id: ref_marked[0],
+									compare_id: Some(ref_marked[1]),
 									tags: None,
 								},
 							),

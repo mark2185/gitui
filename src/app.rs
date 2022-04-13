@@ -874,7 +874,8 @@ impl App {
 					));
 				}
 
-				ids.replace(vec![]);
+				let _old_ids = ids.take();
+                assert_eq!(ids.borrow().len(), 0);
 				flags.insert(NeedsUpdate::ALL);
 			}
 			Action::StashPop(_) => {
